@@ -1,0 +1,24 @@
+stages:
+  - test
+
+.php:
+  image: composer:2
+  cache:
+    key: composer-$CI_COMMIT_REF_SLUG
+    paths:
+      - vendor/
+  before_script:
+    - composer install --no-interaction --prefer-dist --no-progress
+
+phpunit:
+  extends: .php
+  stage: test
+  script:
+    - vendor/bin/phpunit
+
+pint:
+  extends: .php
+  stage: test
+  allow_failure: true
+  script:
+    - vendor/bin/pint --test
