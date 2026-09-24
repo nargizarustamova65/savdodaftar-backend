@@ -1,0 +1,10 @@
+<?php
+
+namespace App\Http\Controllers\Api\V1;
+
+use App\Http\Concerns\RespondsWithJson;
+use App\Http\Controllers\Controller;
+use App\Http\Controllers\Api\V1\ReferralController;
+use Illuminate\Support\Facades\Route;
+
+// This file is intentionally not used; routes are added directly to routes/api.php.

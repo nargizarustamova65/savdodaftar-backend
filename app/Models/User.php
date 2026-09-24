@@ -20,6 +20,7 @@ class User extends Authenticatable
     public function products(): HasMany { return $this->hasMany(Product::class); }
     public function subscriptions(): HasMany { return $this->hasMany(Subscription::class); }
     public function payments(): HasMany { return $this->hasMany(Payment::class); }
+    public function referrals(): HasMany { return $this->hasMany(Referral::class, 'referrer_id'); }
     public function activeSubscription(): ?Subscription { return $this->subscriptions()->active()->orderByDesc('expires_at')->first(); }
     public function isPro(): bool { return $this->subscriptions()->active()->where('plan', Subscription::PLAN_PRO)->exists(); }
     public function isStandard(): bool { return $this->subscriptions()->active()->where('plan', Subscription::PLAN_STANDARD)->exists(); }
