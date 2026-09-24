@@ -9,6 +9,7 @@ use App\Http\Controllers\Api\V1\ExpenseController;
 use App\Http\Controllers\Api\V1\InventoryController;
 use App\Http\Controllers\Api\V1\NotificationController;
 use App\Http\Controllers\Api\V1\ProductController;
+use App\Http\Controllers\Api\V1\ReferralController;
 use App\Http\Controllers\Api\V1\ReportController;
 use App\Http\Controllers\Api\V1\SaleController;
 use App\Http\Controllers\Api\V1\Webhooks\ClickWebhookController;
@@ -30,18 +31,15 @@ Route::prefix('auth')->group(function () {
 });
 
 Route::middleware('auth:sanctum')->group(function () {
-    // Mijozlar
     Route::get('customers/{id}/history', [CustomerController::class, 'history']);
     Route::post('customers/{id}/payments', [CustomerController::class, 'pay']);
     Route::apiResource('customers', CustomerController::class)->parameters(['customers' => 'id']);
 
-    // Qarz daftari
     Route::get('debts/summary', [DebtController::class, 'summary']);
     Route::post('debts/{id}/payments', [DebtController::class, 'pay']);
     Route::get('debts/{id}/audit', [DebtController::class, 'audit']);
     Route::apiResource('debts', DebtController::class)->parameters(['debts' => 'id']);
 
-    // Ombor: mahsulotlar
     Route::get('products/summary', [ProductController::class, 'summary']);
     Route::get('products/categories', [ProductController::class, 'categories']);
     Route::get('products/barcode/{barcode}', [ProductController::class, 'byBarcode']);
@@ -54,11 +52,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::delete('products/{id}/image', [ProductController::class, 'deleteImage']);
     Route::apiResource('products', ProductController::class)->parameters(['products' => 'id']);
 
-    // Ombor: harakatlar va inventarizatsiya
     Route::get('inventory/movements', [InventoryController::class, 'movements']);
     Route::post('inventory/count', [InventoryController::class, 'count']);
 
-    // Savdo
     Route::get('sales/summary', [SaleController::class, 'summary']);
     Route::get('sales/returns', [SaleController::class, 'returns']);
     Route::post('sales/{id}/return', [SaleController::class, 'returnSale']);
@@ -66,31 +62,25 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('sales/{id}/audit', [SaleController::class, 'audit']);
     Route::apiResource('sales', SaleController::class)->only(['index', 'store', 'show'])->parameters(['sales' => 'id']);
 
-    // Xarajatlar (TZ 14)
     Route::get('expenses/summary', [ExpenseController::class, 'summary']);
     Route::apiResource('expenses', ExpenseController::class)->only(['index', 'store', 'destroy'])->parameters(['expenses' => 'id']);
-
-    // Bildirishnomalar (TZ 22)
     Route::get('notifications', [NotificationController::class, 'index']);
 
-    // Bosh sahifa va hisobotlar (TZ 5, 17, 18)
     Route::get('dashboard', [ReportController::class, 'dashboard']);
     Route::get('reports/overview', [ReportController::class, 'overview']);
     Route::get('reports/daily', [ReportController::class, 'daily']);
     Route::get('reports/top-products', [ReportController::class, 'topProducts']);
 
-    // Tarif va Pro checkout (TZ 31, 35, 36)
     Route::get('billing/plan', [BillingController::class, 'plan']);
     Route::post('billing/checkout', [BillingController::class, 'checkout']);
     Route::get('billing/payments/{orderId}', [BillingController::class, 'payment']);
+    Route::get('referral', [ReferralController::class, 'show']);
 
-    // Bulut zaxira (TZ 2, 23)
     Route::get('backups', [BackupController::class, 'index']);
     Route::post('backups', [BackupController::class, 'store'])->middleware('throttle:6,1');
     Route::get('backups/{id}', [BackupController::class, 'show']);
     Route::delete('backups/{id}', [BackupController::class, 'destroy']);
 });
 
-// To'lov provayderlari webhook'lari — Basic auth / MD5 imzo bilan himoyalanadi (TZ 36)
 Route::post('webhooks/payme', PaymeWebhookController::class);
 Route::post('webhooks/click', ClickWebhookController::class);
