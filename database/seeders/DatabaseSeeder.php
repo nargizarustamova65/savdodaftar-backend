@@ -1,19 +1,16 @@
 <?php
 
-namespace Database\Seeders;
-
-use App\Models\User;
+use App\Models\AdminUser;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Hash;
 
 class DatabaseSeeder extends Seeder
 {
     public function run(): void
     {
-        User::factory()->create([
-            'phone' => '+998901234567',
-            'name' => 'Demo foydalanuvchi',
-            'shop_name' => 'Demo do\'kon',
-            'pin' => '1234',
-        ]);
+        AdminUser::updateOrCreate(
+            ['email' => env('ADMIN_EMAIL', 'admin@example.com')],
+            ['name' => 'Administrator', 'password' => Hash::make(env('ADMIN_PASSWORD', 'change-me-now'))],
+        );
     }
 }

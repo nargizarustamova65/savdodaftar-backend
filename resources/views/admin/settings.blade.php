@@ -1,0 +1,1 @@
+@extends('admin.layout') @section('content')<h1>Tariflar</h1><form method="post" action="{{ route('admin.settings.update') }}">@csrf @method('PUT')<p>Standart narxi <input type="number" name="standard_price" value="{{ $standard }}" required></p><p>Pro narxi <input type="number" name="pro_price" value="{{ $pro }}" required></p><button>Saqlash</button></form>@endsection
